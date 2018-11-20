@@ -63,7 +63,3 @@ func TimeoutHandler(h Handler, dt time.Duration, msg string) Handler
 - http://orgmode.org/worg/org-tutorials/org-latex-export.html
 - http://blog.csdn.net/ywj1225/article/details/7407316
 - http://comments.gmane.org/gmane.emacs.orgmode/52201
-
-* 注脚
-[fn:1] 网上好像说xelatex可以解决UTF-8的问题, 但是我真的不知道怎么整。
-[fn:2] 参考 http://golang.org/doc
