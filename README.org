@@ -1,0 +1,2 @@
+* Golang self edu
+  Hello golang built-in libs.
