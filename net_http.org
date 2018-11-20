@@ -1,0 +1,57 @@
+* Golang 标准库: net/http
+** 结构体/接口
+*** [[https://golang.org/pkg/net/http/#Client][Client]]
+**** Do(req **Request) (**Response, error)
+
+**** Get(url string) (**Response, error)
+
+**** Head(req **Request) (**Response, error)
+
+**** Post(url, contentType string, body io.Reader) (**Response, error)
+
+**** PostForm(url string, data url.Values) (**Response, error)
+
+*** [[https://golang.org/pkg/net/http/#Server][Server]]
+
+*** [[https://golang.org/pkg/net/http/#Handler][Handler]]
+    A handler response to an HTTP request. 处理器响应HTTP请求
+
+#+BEGIN_SRC C
+type Handler interface {
+  ServeHTTP(ResponseWriter, *Request)
+}
+#+end_src
+
+- ServeHTTP 应当将回复的 headers, data 写入 ResponseWriter 然后返回.
+- panic(ErrAbortHandler) 让客户端知道回复被中断.
+
+**** FileServer
+#+BEGIN_SRC C
+func FileServer(root FileSystem) Handler
+#+end_src
+
+**** NotFoundHandler
+#+BEGIN_SRC C
+func NotFoundHandler() Handler
+#+end_src
+
+**** RedirectHandler
+#+BEGIN_SRC C
+func RedirectHandler(url string, code int) Handler
+#+end_src
+
+**** TimeoutHandler
+#+BEGIN_SRC C
+func TimeoutHandler(h Handler, dt time.Duration, msg string) Handler
+#+end_src
+
+返回一个 Handler h, 它具有时间的限制
+
+
+*** [[https://golang.org/pkg/net/http/#Request][Request]]
+
+*** Response
+
+*** Transport
+
+*** Pusher
