@@ -1,19 +1,22 @@
-* Golang 标准库: net/http
-** 结构体/接口
-*** [[https://golang.org/pkg/net/http/#Client][Client]]
-**** Do(req **Request) (**Response, error)
+#+TITLE: Golang 标准库: net/http
+#+TAGS: golang, net, http
 
-**** Get(url string) (**Response, error)
+Golang的标准库之 net/http, http是在编程中出镜率非常搞的一个东西。
+而Golang对它的封装和抽象也是非常值得学习的。
 
-**** Head(req **Request) (**Response, error)
+* 结构体/接口
+** [[https://golang.org/pkg/net/http/#Client][Client]]
+*** 方法
+- Do(req **Request) (**Response, error)
+- Get(url string) (**Response, error)
+- Head(req **Request) (**Response, error)
+- Post(url, contentType string, body io.Reader) (**Response, error)
+- PostForm(url string, data url.Values) (**Response, error)
 
-**** Post(url, contentType string, body io.Reader) (**Response, error)
 
-**** PostForm(url string, data url.Values) (**Response, error)
+** [[https://golang.org/pkg/net/http/#Server][Server]]
 
-*** [[https://golang.org/pkg/net/http/#Server][Server]]
-
-*** [[https://golang.org/pkg/net/http/#Handler][Handler]]
+** [[https://golang.org/pkg/net/http/#Handler][Handler]]
     A handler response to an HTTP request. 处理器响应HTTP请求
 
 #+BEGIN_SRC C
@@ -25,22 +28,22 @@ type Handler interface {
 - ServeHTTP 应当将回复的 headers, data 写入 ResponseWriter 然后返回.
 - panic(ErrAbortHandler) 让客户端知道回复被中断.
 
-**** FileServer
+*** FileServer
 #+BEGIN_SRC C
 func FileServer(root FileSystem) Handler
 #+end_src
 
-**** NotFoundHandler
+*** NotFoundHandler
 #+BEGIN_SRC C
 func NotFoundHandler() Handler
 #+end_src
 
-**** RedirectHandler
+*** RedirectHandler
 #+BEGIN_SRC C
 func RedirectHandler(url string, code int) Handler
 #+end_src
 
-**** TimeoutHandler
+*** TimeoutHandler
 #+BEGIN_SRC C
 func TimeoutHandler(h Handler, dt time.Duration, msg string) Handler
 #+end_src
@@ -48,10 +51,19 @@ func TimeoutHandler(h Handler, dt time.Duration, msg string) Handler
 返回一个 Handler h, 它具有时间的限制
 
 
-*** [[https://golang.org/pkg/net/http/#Request][Request]]
+** [[https://golang.org/pkg/net/http/#Request][Request]]
 
-*** Response
+** Response
 
-*** Transport
+** Transport
 
-*** Pusher
+** Pusher
+
+* PDF导出的参考资料
+- http://orgmode.org/worg/org-tutorials/org-latex-export.html
+- http://blog.csdn.net/ywj1225/article/details/7407316
+- http://comments.gmane.org/gmane.emacs.orgmode/52201
+
+* 注脚
+[fn:1] 网上好像说xelatex可以解决UTF-8的问题, 但是我真的不知道怎么整。
+[fn:2] 参考 http://golang.org/doc
