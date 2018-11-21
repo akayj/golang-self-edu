@@ -117,4 +117,14 @@ res, err := c.Get("file:///etc/passwd")
 
 ** Transport
 
+Transport 实现了 RoundTripper, 并支持 HTTP, HTTPS, HTTP代理(HTTP or HTTPS CONNECT)。
+
+默认情况下, Transport缓存连接以供重复使用。
+
+Transport 应当是重复使用，而不是每次都创建, 并且是协程安全的。
+
+#+BEGIN_SRC go
+
+#+END_SRC
+
 ** Pusher
