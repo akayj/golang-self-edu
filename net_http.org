@@ -65,6 +65,24 @@ func (f HandlerFunc) ServeHTTP(w ResponseWriter, r *Request)
 
 ServeHTTP 调用 f(w, r)
 
+#+BEGIN_SRC C
+package main
+
+import (
+  "io"
+  "log"
+  "net/http"
+)
+
+func main() {
+  helloHandler := func(w http.ResponseWriter, r *http.Request) {
+    io.WriteString(w, "Hello, world!\n")
+  }
+  http.HandleFunc("/hello", helloHandler)
+  log.Fatal(http.ListenAndServe(":8080", nil))
+}
+#+END_SRC
+
 
 ** [[https://golang.org/pkg/net/http/#Request][Request]]
 
