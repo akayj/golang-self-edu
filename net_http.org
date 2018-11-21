@@ -49,6 +49,14 @@ Golang对它的抽象和封装的学习能让我们更深入了解HTTP并灵活�
   Serve 总是返回 non-nil 然后关闭 i。 *Shutdown* 或者 *Close* 之后， 将会返回
   ~ErrServerClosed~.
 
++ ~func(srv *Server) Shutdown(ctx context.Context) error~
+
+    /Shutdown/ 优雅的关闭server而不会打断任何活跃的连接。
+    #+BEGIN_QUOTE
+    工作原理:
+    Server 首先关闭所有打开的 _listener_
+    #+END_QUOTE
+
 ** [[https://golang.org/pkg/net/http/#Handler][Handler]]
     A handler response to an HTTP request. 处理器响应HTTP请求
 
