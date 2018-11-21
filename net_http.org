@@ -124,6 +124,30 @@ Transport 实现了 RoundTripper, 并支持 HTTP, HTTPS, HTTP代理(HTTP or HTTP
 Transport 应当是重复使用，而不是每次都创建, 并且是协程安全的。
 
 #+BEGIN_SRC go
+  type Transport struct {
+
+          // If Proxy is nil or returns a nil *URL, no proxy is used.
+          Proxy func(*Request) (*url.URL, error)
+
+          // DialContext
+          DialContext func(ctx context.Context, network, addr string) (net.Conn, error) // Go 1.7
+
+          // DisableKeepAlives, if true, disables HTTP keep-alives and
+          // will only use the connection to the server for a single
+          // HTTP Request.
+          DisableKeepAlives bool
+
+          // MaxIdleConns controls the max number of idle (keep-alive)
+          // connections across all hosts. Zero means no limit.
+          MaxIdleConns int  // Go 1.7
+
+          MaxIdleConnsPerHost int
+
+          // MaxResponseHeaderBytes specifies a limit on how many
+          // response bytes are allowed in the server's response
+          // header.
+          MaxResponseHeaderBytes int64
+  }
 
 #+END_SRC
 
