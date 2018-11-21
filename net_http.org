@@ -1,5 +1,6 @@
 #+TITLE: Golang 标准库: net/http
 #+TAGS: golang, net, http
+#+OPTIONS: toc:t author:nil num:2
 
 Golang的标准库之 net/http, http是在编程中出镜率非常高的一个东西。
 
@@ -88,6 +89,31 @@ func main() {
 ** [[https://golang.org/pkg/net/http/#Request][Request]]
 
 ** Response
+
+** RoundTripper
+
+#+BEGIN_SRC go
+  type RoundTripper interface {
+    // RoundTrip executes a single HTTP transaction, returning
+    // a Response for the provided Request.
+    RoundTrip(*Request) (*Response, error)
+  }
+#+END_SRC
+
+*** NewFileTransport
+
+#+BEGIN_SRC go
+func NewFileTransport(fs FileSystem) RoundTripper
+#+END_SRC
+
+典型用法:
+#+BEGIN_SRC go
+t := &http.Transport{}
+t.RegisterProtocol("file", http.NewFileTransport(http.Dir("/")))
+c := &http.Client{Transport: t}
+res, err := c.Get("file:///etc/passwd")
+...
+#+END_SRC
 
 ** Transport
 
