@@ -167,38 +167,54 @@ func main() {
 
 #+BEGIN_SRC go
 
-  type Request struct {
-          // Method : GET, POST, PUT, etc.
-          Method string
+type Request struct {
+        // Method : GET, POST, PUT, etc.
+        Method string
 
-          URL *url.URL
+        URL *url.URL
 
-          // Header
-          Header Header
+        // Header
+        Header Header
 
-          // Body is the request's body.
-          //
-          // client: The HTTP Client's Transport
-          // is responsible for calling the Close method.
-          //
-          // server: always non-nil but will return EOF when
-          // no body is present.
-          // The Server will close the request body. The ServeHTTP
-          // Handler does not need to.
-          Body io.ReadCloser
+        // Close 指示是否在回应本次请求(对server来说)之后关闭连接, 或者
+        // 在发送本次请求并且读完响应之后(对client来说)。
+        Close bool
 
-          // GetBody defines an optional func to return a new copy of
-          // Body. 它被客户端请求在重定向时重复读取.
-          GetBody func() (io.ReadCloser, error) // Go 1.8
+        // Body is the request's body.
+        //
+        // client: The HTTP Client's Transport
+        // is responsible for calling the Close method.
+        //
+        // server: always non-nil but will return EOF when
+        // no body is present.
+        // The Server will close the request body. The ServeHTTP
+        // Handler does not need to.
+        Body io.ReadCloser
 
-          // value of -1 treated as unknown
-          // >=0 indicate the given number of bytes may be read from Body。
-          // For client requests, a value of 0 但是 Body 非空, 也被认为是未知。
-          ContentLength int64
+        // GetBody defines an optional func to return a new copy of
+        // Body. 它被客户端请求在重定向时重复读取.
+        GetBody func() (io.ReadCloser, error) // Go 1.8
 
-          // Trailer
-          Trailer Header
-  }
+        // value of -1 treated as unknown
+        // >=0 indicate the given number of bytes may be read from Body。
+        // For client requests, a value of 0 但是 Body 非空, 也被认为是未知。
+        ContentLength int64
+
+        // Trailer specifies additional headers that are sent after the request
+        // body.
+        //
+        // For server requests the Trailer map initially contains only the
+        // trailer keys, with nil values. (The client declares which trailers it
+        // will later send.) While the handlers is reading from Body, it must
+        // not reference Trailer. After reading from Body returns EOF, Trailer
+        // can be read again and will contain non-nil values, if they were sent
+        // by the client.
+        //
+        // 对于客户端请求, Trailer 必须初始化为一个map，其中包含之后要发送的keys.
+        // map中的值可以是 nil 或者它们的最终值。
+        // ContentLength 必须是 0 或者 -1 才能发 chunked 请求。
+        Trailer Header
+}
 
 #+END_SRC
 
@@ -220,7 +236,7 @@ func main() {
 func NewFileTransport(fs FileSystem) RoundTripper
 #+END_SRC
 
-典型用法:
+*典型用法*
 #+BEGIN_SRC go
 t := &http.Transport{}
 t.RegisterProtocol("file", http.NewFileTransport(http.Dir("/")))
