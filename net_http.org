@@ -92,8 +92,3 @@ func main() {
 ** Transport
 
 ** Pusher
-
-* PDF导出的参考资料
-- http://orgmode.org/worg/org-tutorials/org-latex-export.html
-- http://blog.csdn.net/ywj1225/article/details/7407316
-- http://comments.gmane.org/gmane.emacs.orgmode/52201
