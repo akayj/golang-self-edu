@@ -2,11 +2,7 @@
 #+TAGS: golang, net, http
 
 Golang的标准库之 net/http, http是在编程中出镜率非常搞的一个东西。
-而Golang[fn:1]对它的封装和抽象也是非常值得学习的。
-
-| Name       | Phone | Age |
-|------------+-------+-----|
-| yujianjian |   192 |  23 |
+而Golang对它的封装和抽象也是非常值得学习的。
 
 * 结构体/接口
 ** [[https://golang.org/pkg/net/http/#Client][Client]]
@@ -35,24 +31,39 @@ type Handler interface {
 *** FileServer
 #+BEGIN_SRC C
 func FileServer(root FileSystem) Handler
-#+end_src
+#+END_SRC
 
 *** NotFoundHandler
 #+BEGIN_SRC C
 func NotFoundHandler() Handler
-#+end_src
+#+END_SRC
 
 *** RedirectHandler
 #+BEGIN_SRC C
 func RedirectHandler(url string, code int) Handler
-#+end_src
+#+END_SRC
 
 *** TimeoutHandler
 #+BEGIN_SRC C
 func TimeoutHandler(h Handler, dt time.Duration, msg string) Handler
-#+end_src
+#+END_SRC
 
 返回一个 Handler h, 它具有时间的限制
+
+*** HandlerFunc
+#+BEGIN_SRC C
+type HandlerFunc func(ResponseWriter, *Request)
+#+END_SRC
+
+HandlerFunc 允许你自定义 HTTP handlers 的一个适配器。
+只要函数 f 实现了合适的签名(方法), HandlerFunc(f) 就是一个 Handler。
+
+
+#+BEGIN_SRC C
+func (f HandlerFunc) ServeHTTP(w ResponseWriter, r *Request)
+#+END_SRC
+
+ServeHTTP 调用 f(w, r)
 
 
 ** [[https://golang.org/pkg/net/http/#Request][Request]]
