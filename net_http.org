@@ -1,8 +1,9 @@
 #+TITLE: Golang 标准库: net/http
 #+TAGS: golang, net, http
 
-Golang的标准库之 net/http, http是在编程中出镜率非常搞的一个东西。
-而Golang对它的封装和抽象也是非常值得学习的。
+Golang的标准库之 net/http, http是在编程中出镜率非常高的一个东西。
+
+Golang对它的抽象和封装的学习能让我们更深入了解HTTP并灵活使用它。
 
 * 结构体/接口
 ** [[https://golang.org/pkg/net/http/#Client][Client]]
