@@ -40,11 +40,11 @@ Golang对它的抽象和封装的学习能让我们更深入了解HTTP并灵活�
   }
 #+END_SRC
 
-方法:
+*** 方法
 + ~func(srv *Server) Serve(l net.Listener) error~
 
   Serve 接受从 Listener l 中来的连接, 为每一个开启单独的协程服务。
-  协程读取请求，然后调用 srv.Handler 来影响他们。
+  协程读取请求，然后调用 srv.Handler 来回应他们。
 
   Serve 总是返回 non-nil 然后关闭 i。 *Shutdown* 或者 *Close* 之后， 将会返回
   ~ErrServerClosed~.
@@ -52,13 +52,48 @@ Golang对它的抽象和封装的学习能让我们更深入了解HTTP并灵活�
 + ~func(srv *Server) Shutdown(ctx context.Context) error~
 
     /Shutdown/ 优雅的关闭server而不会打断任何活跃的连接。
-    #+BEGIN_QUOTE
-    *工作原理*
+    /Shutdown/ 返回的错误: _ctx_ 的错误; 关闭底层 _listener_ 的错误
 
+    #+BEGIN_QUOTE
     Server 首先关闭所有打开的 _listener_, 然后无限期的等待连接空闲，接着关闭它们。
     #+END_QUOTE
 
     _Shutdown_ 后, /Serve/, /ListenAndServe/, /ListenAndServeTLS/ 立即返回 /ErrServerClosed/ 。
+
+#+BEGIN_SRC go
+  package main
+
+  import (
+    "context"
+    "log"
+    "net/http"
+    "os"
+    "os/signal"
+  )
+
+  func main() {
+    var srv http.Server
+
+    idleConnsClosed := make(chan int)
+    go func() {
+      sigint := make(chan os.Signal, 1)
+      signal.Notify(sigint, os.Interrupt)
+      <-sigint
+
+      // We received an interrupt signal, shut down.
+      if err := srv.Shutdown(context.Background()); err != nil {
+        log.Printf("HTTP server shutdown: %v", err)
+      }
+      close(idleConnsClosed)
+    }()
+
+    if err := srv.ListenAndServe(); err != http.ErrServerClosed {
+        log.Printf("HTTP server ListenAndServe: %v", err)
+    }
+    <-idleConnsClosed
+  }
+#+END_SRC
+
 
 ** [[https://golang.org/pkg/net/http/#Handler][Handler]]
     A handler response to an HTTP request. 处理器响应HTTP请求
@@ -129,6 +164,43 @@ func main() {
 
 
 ** [[https://golang.org/pkg/net/http/#Request][Request]]
+
+#+BEGIN_SRC go
+
+  type Request struct {
+          // Method : GET, POST, PUT, etc.
+          Method string
+
+          URL *url.URL
+
+          // Header
+          Header Header
+
+          // Body is the request's body.
+          //
+          // client: The HTTP Client's Transport
+          // is responsible for calling the Close method.
+          //
+          // server: always non-nil but will return EOF when
+          // no body is present.
+          // The Server will close the request body. The ServeHTTP
+          // Handler does not need to.
+          Body io.ReadCloser
+
+          // GetBody defines an optional func to return a new copy of
+          // Body. 它被客户端请求在重定向时重复读取.
+          GetBody func() (io.ReadCloser, error) // Go 1.8
+
+          // value of -1 treated as unknown
+          // >=0 indicate the given number of bytes may be read from Body。
+          // For client requests, a value of 0 但是 Body 非空, 也被认为是未知。
+          ContentLength int64
+
+          // Trailer
+          Trailer Header
+  }
+
+#+END_SRC
 
 ** Response
 
