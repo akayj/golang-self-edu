@@ -20,39 +20,39 @@ Golang对它的抽象和封装的学习能让我们更深入了解HTTP并灵活�
 ** [[https://golang.org/pkg/net/http/#Handler][Handler]]
     A handler response to an HTTP request. 处理器响应HTTP请求
 
-#+BEGIN_SRC C
+#+BEGIN_SRC go :imports "net/http"
 type Handler interface {
   ServeHTTP(ResponseWriter, *Request)
 }
-#+end_src
+#+END_SRC
 
 - ServeHTTP 应当将回复的 headers, data 写入 ResponseWriter 然后返回.
 - panic(ErrAbortHandler) 让客户端知道回复被中断.
 
 *** FileServer
-#+BEGIN_SRC C
+#+BEGIN_SRC go
 func FileServer(root FileSystem) Handler
 #+END_SRC
 
 *** NotFoundHandler
-#+BEGIN_SRC C
+#+BEGIN_SRC go
 func NotFoundHandler() Handler
 #+END_SRC
 
 *** RedirectHandler
-#+BEGIN_SRC C
+#+BEGIN_SRC go
 func RedirectHandler(url string, code int) Handler
 #+END_SRC
 
 *** TimeoutHandler
-#+BEGIN_SRC C
+#+BEGIN_SRC go
 func TimeoutHandler(h Handler, dt time.Duration, msg string) Handler
 #+END_SRC
 
 返回一个 Handler h, 它具有时间的限制
 
 *** HandlerFunc
-#+BEGIN_SRC C
+#+BEGIN_SRC go
 type HandlerFunc func(ResponseWriter, *Request)
 #+END_SRC
 
@@ -60,13 +60,13 @@ HandlerFunc 允许你自定义 HTTP handlers 的一个适配器。
 只要函数 f 实现了合适的签名(方法), HandlerFunc(f) 就是一个 Handler。
 
 
-#+BEGIN_SRC C
+#+BEGIN_SRC go
 func (f HandlerFunc) ServeHTTP(w ResponseWriter, r *Request)
 #+END_SRC
 
 ServeHTTP 调用 f(w, r)
 
-#+BEGIN_SRC C
+#+BEGIN_SRC go
 package main
 
 import (
