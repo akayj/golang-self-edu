@@ -151,4 +151,9 @@ Transport 应当是重复使用，而不是每次都创建, 并且是协程安�
 
 #+END_SRC
 
+方法:
+
++ func (*Transport) RegisterProtocol(scheme string rt RoundTriper)
++ func (*Transport) RoundTrip(req *Request) (*Response, error)
+
 ** Pusher
