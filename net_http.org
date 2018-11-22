@@ -19,25 +19,24 @@ Golang对它的抽象和封装的学习能让我们更深入了解HTTP并灵活�
 ** [[https://golang.org/pkg/net/http/#Server][Server]]
 
 #+BEGIN_SRC go
-  type Server struct {
-          Addr string     // TCP address to listen on, ":http" if empty
-          Handler Handler // handler to invoke, http.DefaultServerMux if nil
+type Server struct {
+        Addr string     // 要监听的TCP地址, 如果空就用 80
+        Handler Handler // 要调用的handler, 默认是http.DefaultServerMux
 
-          TLSConfig *tls.Config
+        TLSConfig *tls.Config
 
-          // ReadTimeout is the maximum duration for reading the entire
-          // request, including the body.
-          ReadTimeout time.Duration
-          ReadHeaderTimeout time.Duration // Go 1.8
+        // 读取整个请求, 包括 Body 总共花费的时间
+        ReadTimeout time.Duration
+        ReadHeaderTimeout time.Duration // Go 1.8
 
-          // IdleTimeout is the maximum amount of time to wait for the
-          // next request when keep-alives are enabled. If IdleTimeout
-          // is zero, the value of ReadTimeout is used. If both are
-          // zero, ReadHeaderTimeout is used.
-          IdleTimeout time.Duration
+        // IdleTimeout is the maximum amount of time to wait for the
+        // next request when keep-alives are enabled. If IdleTimeout
+        // is zero, the value of ReadTimeout is used. If both are
+        // zero, ReadHeaderTimeout is used.
+        IdleTimeout time.Duration
 
-          MaxHeaderBytes int
-  }
+        MaxHeaderBytes int
+}
 #+END_SRC
 
 *** 方法
